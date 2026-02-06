@@ -216,25 +216,40 @@
         }
 
         /* КОНТЕЙНЕР ФОТО - АБСОЛЮТНО ФИКСИРОВАННЫЙ */
+/* ФОТО - СТРОГО 180px */
         .product-image-container {
             width: 100%;
-            height: 180px;
-            min-height: 180px;
-            max-height: 180px;
+            height: 180px;        /* Жесткая высота */
+            min-height: 180px;    /* Запрещаем сжиматься */
+            max-height: 180px;    /* Запрещаем растягиваться */
             background: #f5f5f5;
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            position: relative;
+            flex-shrink: 0;       /* ВАЖНО: Запрещаем блоку с фото сжиматься, если текста много */
+            position: relative;   /* Для правильного позиционирования */
+            border-bottom: 1px solid #e6f7ec; /* Визуальный разделитель фото и текста */
         }
 
         .product-image {
             width: 100%;
             height: 100%;
-            object-fit: contain;
+            /* ВАРИАНТ 1 (Рекомендую): cover 
+               Картинка заполнит весь блок без пробелов. 
+               Края могут обрезаться, но сетка будет идеально ровной.
+            */
+            object-fit: cover; 
+            
+            /* ВАРИАНТ 2: contain 
+               Картинка видна целиком, но будут белые полосы по бокам.
+               Если выберете это, раскомментируйте строку ниже, а верхнюю уберите:
+            */
+            /* object-fit: contain; */
+            
             object-position: center;
             display: block;
+        }
         }
 
         .no-image {
