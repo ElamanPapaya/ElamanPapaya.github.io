@@ -175,6 +175,7 @@
             grid-template-columns: 1fr;
             gap: 20px;
             margin-bottom: 30px;
+            align-items: stretch;
         }
         
         @media (min-width: 480px) {
@@ -198,7 +199,7 @@
         }
 
         /* ============================================
-           ПОЛНОСТЬЮ ПЕРЕДЕЛАННАЯ КАРТОЧКА
+           КАРТОЧКА - ИСПРАВЛЕННАЯ СТРУКТУРА
            ============================================ */
 
         .product-card {
@@ -208,6 +209,9 @@
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             border: 1px solid #e6f7ec;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
         }
 
         .product-card:hover {
@@ -215,55 +219,47 @@
             box-shadow: 0 8px 12px rgba(72, 187, 120, 0.15);
         }
 
-        /* КОНТЕЙНЕР ФОТО - АБСОЛЮТНО ФИКСИРОВАННЫЙ */
-/* ФОТО - СТРОГО 180px */
+        /* ФОТО - ИСПРАВЛЕНО (ОТСУТСТВИЕ СДВИГОВ) */
         .product-image-container {
             width: 100%;
             height: 180px;        /* Жесткая высота */
-            min-height: 180px;    /* Запрещаем сжиматься */
-            max-height: 180px;    /* Запрещаем растягиваться */
+            min-height: 180px;
+            max-height: 180px;
             background: #f5f5f5;
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            flex-shrink: 0;       /* ВАЖНО: Запрещаем блоку с фото сжиматься, если текста много */
-            position: relative;   /* Для правильного позиционирования */
-            border-bottom: 1px solid #e6f7ec; /* Визуальный разделитель фото и текста */
+            flex-shrink: 0;       /* Запрет сжатия */
+            position: relative;
+            border-bottom: 1px solid #e6f7ec;
         }
 
         .product-image {
             width: 100%;
             height: 100%;
-            /* ВАРИАНТ 1 (Рекомендую): cover 
-               Картинка заполнит весь блок без пробелов. 
-               Края могут обрезаться, но сетка будет идеально ровной.
-            */
-            object-fit: cover; 
-            
-            /* ВАРИАНТ 2: contain 
-               Картинка видна целиком, но будут белые полосы по бокам.
-               Если выберете это, раскомментируйте строку ниже, а верхнюю уберите:
-            */
-            /* object-fit: contain; */
-            
+            object-fit: cover;    /* Заполняет весь блок, обрезая лишнее */
             object-position: center;
             display: block;
         }
-        }
 
-        .no-image {
+        .no-image, .no-image-fallback {
             color: #90a4ae;
             font-size: 3em;
             user-select: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
         }
 
-        /* КОНТЕНТ КАРТОЧКИ */
+        /* КОНТЕНТ */
         .product-content {
             padding: 15px;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            flex-grow: 1;
         }
 
         @media (min-width: 768px) {
@@ -279,13 +275,13 @@
             text-align: center;
             font-weight: 600;
             line-height: 1.3;
-            min-height: 2.6em;
-            max-height: 2.6em;
+            height: 2.6em;
             overflow: hidden;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             word-wrap: break-word;
+            flex-shrink: 0;
         }
 
         @media (min-width: 768px) {
@@ -300,13 +296,14 @@
             font-size: 0.82em;
             text-align: center;
             line-height: 1.2;
-            min-height: 2.4em;
-            max-height: 2.4em;
+            height: 2.4em;
             overflow: hidden;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             word-wrap: break-word;
+            margin-top: 8px;
+            flex-shrink: 0;
         }
 
         @media (min-width: 768px) {
@@ -318,7 +315,9 @@
         /* РАЗДЕЛИТЕЛЬ */
         .product-divider {
             border-top: 2px dashed #c8e6c9;
-            margin: 8px 0;
+            margin-top: auto;
+            margin-bottom: 12px;
+            flex-shrink: 0;
         }
 
         /* ЦЕНА */
@@ -327,7 +326,8 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
-            min-height: 40px;
+            height: 36px;
+            flex-shrink: 0;
         }
 
         .price {
@@ -353,8 +353,10 @@
             color: #90a4ae;
             text-align: center;
             font-family: monospace;
-            margin-top: 4px;
+            margin-top: 6px;
             white-space: nowrap;
+            height: 16px;
+            flex-shrink: 0;
         }
 
         .order-section {
@@ -466,6 +468,7 @@
     </div>
 
     <script>
+        // Твой URL Google Script (оставил тот же, что был в файле)
         const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbz7kLxp_-l4t39CaS8tjN_yuYlY6myMUhfrxnD5fGNXwDiopcf24DXHwu-Mvr3sZQT7lw/exec';
 
         let allProducts = [];
@@ -552,13 +555,43 @@
             }
         }
 
+        // ==========================================
+        // ИСПРАВЛЕННАЯ ФУНКЦИЯ СОЗДАНИЯ КАРТОЧКИ
+        // ==========================================
         function createProductCard(product) {
-            const hasImage = product.image && product.image.trim() !== '';
-            const imageUrl = hasImage ? product.image.trim() : '';
+            // 1. ОЧИСТКА ДАННЫХ ОТ МУСОРА
+            // Превращаем в строку, если пришло что-то другое
+            let rawImage = product.image ? String(product.image) : '';
             
+            // Самое важное: убираем кавычки, скобки [], лишние пробелы
+            // Это решает проблему появления символов ',' > на экране
+            let imageUrl = rawImage.replace(/['"\[\]]/g, '').trim();
+            
+            // Если в ячейке было несколько ссылок через запятую, берем только первую
+            if (imageUrl.includes(',')) {
+                imageUrl = imageUrl.split(',')[0].trim();
+            }
+
+            // Простая проверка, что ссылка похожа на ссылку (длиннее 5 символов)
+            const hasImage = imageUrl.length > 5;
+
+            // 2. БЕЗОПАСНАЯ ГЕНЕРАЦИЯ HTML
+            // Если картинка не загрузится (onerror), она скроется, и покажется иконка
             let imageContent;
+            
             if (hasImage) {
-                imageContent = `<img src="${imageUrl}" alt="${product.name}" class="product-image" loading="lazy" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\"no-image\\">${getCategoryIcon(product.category)}</div>';">`;
+                imageContent = `
+                    <img 
+                        src="${imageUrl}" 
+                        alt="${product.name}" 
+                        class="product-image" 
+                        loading="lazy" 
+                        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                    >
+                    <div class="no-image-fallback" style="display:none;">
+                        ${getCategoryIcon(product.category)}
+                    </div>
+                `;
             } else {
                 imageContent = `<div class="no-image">${getCategoryIcon(product.category)}</div>`;
             }
@@ -569,7 +602,7 @@
                         ${imageContent}
                     </div>
                     <div class="product-content">
-                        <div class="product-name">${product.name}</div>
+                        <div class="product-name" title="${product.name}">${product.name}</div>
                         <div class="product-details">${product.description || ''}</div>
                         <div class="product-divider"></div>
                         <div class="price-container">
@@ -602,7 +635,7 @@
             const buttons = document.querySelectorAll('.filter-btn');
             
             buttons.forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+            if(event) event.target.classList.add('active');
             
             if (category === 'all') {
                 sections.forEach(section => section.style.display = 'block');
@@ -617,6 +650,7 @@
             }
         }
 
+        // Обновление каждые 5 минут
         setInterval(loadProducts, 5 * 60 * 1000);
     </script>
 </body>
