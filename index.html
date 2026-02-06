@@ -9,6 +9,28 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            /* Экстренный фикс для изображений */
+.product-image-container {
+    height: 180px !important;
+    min-height: 180px !important;
+    max-height: 180px !important;
+}
+
+.product-card {
+    min-height: 400px !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+.product-name,
+.product-details {
+    flex-shrink: 0 !important;
+}
+
+.product-image {
+    max-height: 180px !important;
+    object-fit: contain !important;
+}
         }
 
         body {
