@@ -220,6 +220,35 @@
             box-shadow: 0 8px 12px rgba(72, 187, 120, 0.15);
         }
 
+        .product-image-container {
+            width: 100%;
+            height: 180px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .product-card:hover .product-image {
+            transform: scale(1.05);
+        }
+
+        .no-image {
+            color: #90a4ae;
+            font-size: 3em;
+        }
+
         .product-name {
             font-size: 1.2em;
             color: #2e7d32;
@@ -244,6 +273,7 @@
             text-align: center;
             margin-bottom: 12px;
             min-height: 35px;
+            line-height: 1.4;
         }
 
         @media (min-width: 768px) {
@@ -359,12 +389,12 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🌰 Papaya 🌰</h1>
+            <h1>🌰 ЕЛАМАН 🌰</h1>
             <p class="subtitle">Сухофрукты и орехи оптом из Турции и Узбекистана</p>
             <div class="contact-info">
                 <strong>☎️ Телефон:</strong> 8 705 764 52 13<br>
                 <strong>📱 WhatsApp:</strong> +7 705 764 52 13<br>
-                <strong>📍 Адрес:</strong> Усть каменогорск, доставка по всему Казахстану
+                <strong>📍 Адрес:</strong> Астана, доставка по всему Казахстану
             </div>
         </div>
 
@@ -410,12 +440,14 @@
         // ============================================
         // СТРУКТУРА ДАННЫХ В GOOGLE SHEETS
         // ============================================
-        // Столбцы в таблице (порядок важен!):
+        // Обновленная структура столбцов (добавлен столбец F для фото):
         // A: ID (уникальный идентификатор, например: nut-001, fruit-001)
         // B: Категория (nuts, dried-fruits, dried-vegetables, seeds, confectionery, other)
         // C: Название
         // D: Описание
         // E: Цена
+        // F: Ссылка на фото (URL изображения)
+        // Пример фото: https://example.com/images/almonds.jpg
 
         let allProducts = [];
         let currentFilter = 'all';
@@ -507,8 +539,33 @@
         }
 
         function createProductCard(product) {
+            // Проверяем наличие ссылки на фото
+            const hasImage = product.image && product.image.trim() !== '';
+            const imageUrl = hasImage ? product.image.trim() : '';
+            
+            // Определяем, что показывать в качестве изображения
+            let imageContent;
+            if (hasImage) {
+                imageContent = `<img src="${imageUrl}" alt="${product.name}" class="product-image" loading="lazy" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\"no-image\">🌰</div>';">`;
+            } else {
+                // Показываем иконку по категории
+                const categoryIcons = {
+                    'nuts': '🌰',
+                    'dried-fruits': '🍇',
+                    'dried-vegetables': '🥕',
+                    'seeds': '🌻',
+                    'confectionery': '🍬',
+                    'other': '🛒'
+                };
+                const icon = categoryIcons[product.category] || '🌰';
+                imageContent = `<div class="no-image">${icon}</div>`;
+            }
+            
             return `
                 <div class="product-card" data-id="${product.id}">
+                    <div class="product-image-container">
+                        ${imageContent}
+                    </div>
                     <div class="product-name">${product.name}</div>
                     <div class="product-details">${product.description || ''}</div>
                     <div class="price-container">
