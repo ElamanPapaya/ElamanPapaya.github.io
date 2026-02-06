@@ -198,28 +198,16 @@
         }
 
         /* ============================================
-           КРИТИЧЕСКИ ВАЖНЫЕ СТИЛИ ДЛЯ КАРТОЧЕК
+           ПОЛНОСТЬЮ ПЕРЕДЕЛАННАЯ КАРТОЧКА
            ============================================ */
 
         .product-card {
             background: white;
             border-radius: 12px;
-            padding: 15px;
             box-shadow: 0 4px 6px rgba(72, 187, 120, 0.1);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             border: 1px solid #e6f7ec;
-            
-            /* ЖЕСТКО ФИКСИРУЕМ СТРУКТУРУ */
-            display: grid;
-            grid-template-rows: 180px auto auto auto auto;
-            gap: 10px;
-            align-content: start;
-        }
-        
-        @media (min-width: 768px) {
-            .product-card {
-                padding: 18px;
-            }
+            overflow: hidden;
         }
 
         .product-card:hover {
@@ -227,53 +215,62 @@
             box-shadow: 0 8px 12px rgba(72, 187, 120, 0.15);
         }
 
-        /* ФОТО - СТРОГО 180px */
+        /* КОНТЕЙНЕР ФОТО - АБСОЛЮТНО ФИКСИРОВАННЫЙ */
         .product-image-container {
             width: 100%;
             height: 180px;
-            border-radius: 8px;
-            overflow: hidden;
+            min-height: 180px;
+            max-height: 180px;
             background: #f5f5f5;
             display: flex;
             align-items: center;
             justify-content: center;
-            grid-row: 1;
+            overflow: hidden;
+            position: relative;
         }
 
         .product-image {
             width: 100%;
             height: 100%;
             object-fit: contain;
-            transition: transform 0.3s ease;
-        }
-
-        .product-card:hover .product-image {
-            transform: scale(1.05);
+            object-position: center;
+            display: block;
         }
 
         .no-image {
             color: #90a4ae;
             font-size: 3em;
+            user-select: none;
         }
 
-        /* НАЗВАНИЕ - СТРОГО 2 СТРОКИ */
+        /* КОНТЕНТ КАРТОЧКИ */
+        .product-content {
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        @media (min-width: 768px) {
+            .product-content {
+                padding: 18px;
+            }
+        }
+
+        /* НАЗВАНИЕ */
         .product-name {
             font-size: 1.05em;
             color: #2e7d32;
             text-align: center;
             font-weight: 600;
-            
-            /* ФИКСИРУЕМ ВЫСОТУ НА 2 СТРОКИ */
-            height: 2.6em;
-            line-height: 1.3em;
-            
+            line-height: 1.3;
+            min-height: 2.6em;
+            max-height: 2.6em;
+            overflow: hidden;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            
-            grid-row: 2;
+            word-wrap: break-word;
         }
 
         @media (min-width: 768px) {
@@ -282,23 +279,19 @@
             }
         }
 
-        /* ОПИСАНИЕ - СТРОГО 2 СТРОКИ */
+        /* ОПИСАНИЕ */
         .product-details {
             color: #1b5e20;
             font-size: 0.82em;
             text-align: center;
-            
-            /* ФИКСИРУЕМ ВЫСОТУ НА 2 СТРОКИ */
-            height: 2.4em;
-            line-height: 1.2em;
-            
+            line-height: 1.2;
+            min-height: 2.4em;
+            max-height: 2.4em;
+            overflow: hidden;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            
-            grid-row: 3;
+            word-wrap: break-word;
         }
 
         @media (min-width: 768px) {
@@ -307,23 +300,26 @@
             }
         }
 
-        /* ЦЕНА - ФИКСИРОВАННАЯ ВЫСОТА */
+        /* РАЗДЕЛИТЕЛЬ */
+        .product-divider {
+            border-top: 2px dashed #c8e6c9;
+            margin: 8px 0;
+        }
+
+        /* ЦЕНА */
         .price-container {
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
-            padding-top: 12px;
-            border-top: 2px dashed #c8e6c9;
-            height: 50px;
-            
-            grid-row: 4;
+            min-height: 40px;
         }
 
         .price {
             font-size: 1.25em;
             color: #388e3c;
             font-weight: bold;
+            white-space: nowrap;
         }
         
         @media (min-width: 768px) {
@@ -336,16 +332,14 @@
             font-size: 0.9em;
         }
 
-        /* ID - ФИКСИРОВАННАЯ ВЫСОТА */
+        /* ID */
         .product-id {
             font-size: 0.68em;
             color: #90a4ae;
             text-align: center;
             font-family: monospace;
-            height: 20px;
-            line-height: 20px;
-            
-            grid-row: 5;
+            margin-top: 4px;
+            white-space: nowrap;
         }
 
         .order-section {
@@ -559,15 +553,18 @@
                     <div class="product-image-container">
                         ${imageContent}
                     </div>
-                    <div class="product-name">${product.name}</div>
-                    <div class="product-details">${product.description || ''}</div>
-                    <div class="price-container">
-                        <span class="price">
-                            <span class="price-value">${product.price}</span> 
-                            <span class="currency">₸</span>
-                        </span>
+                    <div class="product-content">
+                        <div class="product-name">${product.name}</div>
+                        <div class="product-details">${product.description || ''}</div>
+                        <div class="product-divider"></div>
+                        <div class="price-container">
+                            <span class="price">
+                                <span class="price-value">${product.price}</span> 
+                                <span class="currency">₸</span>
+                            </span>
+                        </div>
+                        <div class="product-id">ID: ${product.id}</div>
                     </div>
-                    <div class="product-id">ID: ${product.id}</div>
                 </div>
             `;
         }
