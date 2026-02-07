@@ -198,10 +198,6 @@
             }
         }
 
-        /* ============================================
-           КАРТОЧКА - ИСПРАВЛЕННАЯ СТРУКТУРА
-           ============================================ */
-
         .product-card {
             background: white;
             border-radius: 12px;
@@ -219,10 +215,9 @@
             box-shadow: 0 8px 12px rgba(72, 187, 120, 0.15);
         }
 
-        /* ФОТО - ИСПРАВЛЕНО (ОТСУТСТВИЕ СДВИГОВ) */
         .product-image-container {
             width: 100%;
-            height: 180px;        /* Жесткая высота */
+            height: 180px;
             min-height: 180px;
             max-height: 180px;
             background: #f5f5f5;
@@ -230,7 +225,7 @@
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            flex-shrink: 0;       /* Запрет сжатия */
+            flex-shrink: 0;
             position: relative;
             border-bottom: 1px solid #e6f7ec;
         }
@@ -238,7 +233,7 @@
         .product-image {
             width: 100%;
             height: 100%;
-            object-fit: cover;    /* Заполняет весь блок, обрезая лишнее */
+            object-fit: cover;
             object-position: center;
             display: block;
         }
@@ -254,7 +249,6 @@
             height: 100%;
         }
 
-        /* КОНТЕНТ */
         .product-content {
             padding: 15px;
             display: flex;
@@ -262,13 +256,6 @@
             flex-grow: 1;
         }
 
-        @media (min-width: 768px) {
-            .product-content {
-                padding: 18px;
-            }
-        }
-
-        /* НАЗВАНИЕ */
         .product-name {
             font-size: 1.05em;
             color: #2e7d32;
@@ -284,13 +271,6 @@
             flex-shrink: 0;
         }
 
-        @media (min-width: 768px) {
-            .product-name {
-                font-size: 1.1em;
-            }
-        }
-
-        /* ОПИСАНИЕ */
         .product-details {
             color: #1b5e20;
             font-size: 0.82em;
@@ -306,13 +286,6 @@
             flex-shrink: 0;
         }
 
-        @media (min-width: 768px) {
-            .product-details {
-                font-size: 0.85em;
-            }
-        }
-
-        /* РАЗДЕЛИТЕЛЬ */
         .product-divider {
             border-top: 2px dashed #c8e6c9;
             margin-top: auto;
@@ -320,7 +293,6 @@
             flex-shrink: 0;
         }
 
-        /* ЦЕНА */
         .price-container {
             display: flex;
             align-items: center;
@@ -336,18 +308,11 @@
             font-weight: bold;
             white-space: nowrap;
         }
-        
-        @media (min-width: 768px) {
-            .price {
-                font-size: 1.35em;
-            }
-        }
 
         .currency {
             font-size: 0.9em;
         }
 
-        /* ID */
         .product-id {
             font-size: 0.68em;
             color: #90a4ae;
@@ -370,36 +335,6 @@
             border: 1px solid #4caf50;
         }
 
-        @media (min-width: 768px) {
-            .order-section {
-                padding: 50px;
-            }
-        }
-
-        .order-section h2 {
-            font-size: 1.8em;
-            margin-bottom: 15px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        @media (min-width: 768px) {
-            .order-section h2 {
-                font-size: 2.5em;
-            }
-        }
-
-        .order-section p {
-            font-size: 1em;
-            margin-bottom: 20px;
-            opacity: 0.95;
-        }
-
-        @media (min-width: 768px) {
-            .order-section p {
-                font-size: 1.2em;
-            }
-        }
-
         .btn {
             background: white;
             color: #2e7d32;
@@ -413,13 +348,6 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             display: inline-block;
             text-decoration: none;
-        }
-
-        @media (min-width: 768px) {
-            .btn {
-                padding: 18px 40px;
-                font-size: 1.2em;
-            }
         }
 
         .btn:hover {
@@ -442,13 +370,13 @@
         </div>
 
         <div class="filter-container">
-            <button class="filter-btn active" onclick="filterCategory('all')">Все товары</button>
-            <button class="filter-btn" onclick="filterCategory('nuts')">Орехи</button>
-            <button class="filter-btn" onclick="filterCategory('dried-fruits')">Сушка</button>
-            <button class="filter-btn" onclick="filterCategory('dried-vegetables')">Овощи</button>
-            <button class="filter-btn" onclick="filterCategory('seeds')">Семена</button>
-            <button class="filter-btn" onclick="filterCategory('confectionery')">Сладости</button>
-            <button class="filter-btn" onclick="filterCategory('other')">Другое</button>
+            <button class="filter-btn active" onclick="filterCategory('all', event)">Все товары</button>
+            <button class="filter-btn" onclick="filterCategory('nuts', event)">Орехи</button>
+            <button class="filter-btn" onclick="filterCategory('dried-fruits', event)">Сушка</button>
+            <button class="filter-btn" onclick="filterCategory('dried-vegetables', event)">Овощи</button>
+            <button class="filter-btn" onclick="filterCategory('seeds', event)">Семена</button>
+            <button class="filter-btn" onclick="filterCategory('confectionery', event)">Сладости</button>
+            <button class="filter-btn" onclick="filterCategory('other', event)">Другое</button>
         </div>
 
         <div id="productsContainer">
@@ -468,39 +396,27 @@
     </div>
 
     <script>
-        // Твой URL Google Script (оставил тот же, что был в файле)
         const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbzq9HQmk33tB_wBecJNFHgvgx14R4PM3k5jKUbm4tIPo2rImLMma48C7zjFNaKCkLje/exec';
 
         let allProducts = [];
         let currentFilter = 'all';
 
-        window.addEventListener('DOMContentLoaded', function() {
-            loadProducts();
-        });
+        window.addEventListener('DOMContentLoaded', loadProducts);
 
         async function loadProducts() {
             try {
                 const response = await fetch(GOOGLE_SHEETS_URL);
-                
-                if (!response.ok) {
-                    throw new Error('Ошибка при загрузке данных');
-                }
-                
+                if (!response.ok) throw new Error('Ошибка при загрузке данных');
                 const data = await response.json();
                 allProducts = data.products || [];
-                
-                if (allProducts.length === 0) {
-                    throw new Error('Нет данных в базе');
-                }
-                
+                if (allProducts.length === 0) throw new Error('Нет данных в базе');
                 renderProducts();
             } catch (error) {
                 console.error('Ошибка загрузки:', error);
                 document.getElementById('productsContainer').innerHTML = `
                     <div class="error">
                         ❌ Ошибка загрузки товаров: ${error.message}<br><br>
-                        Пожалуйста, проверьте настройки Google Sheets.<br>
-                        Убедитесь, что URL скрипта указан правильно.
+                        Пожалуйста, проверьте настройки Google Sheets.
                     </div>
                 `;
             }
@@ -508,7 +424,6 @@
 
         function renderProducts() {
             const container = document.getElementById('productsContainer');
-            
             const categories = {
                 'nuts': { title: '🌰 Орехи', products: [] },
                 'dried-fruits': { title: '🍇 Сухофрукты', products: [] },
@@ -519,29 +434,19 @@
             };
 
             allProducts.forEach(product => {
-                const category = product.category || 'other';
-                if (categories[category]) {
-                    categories[category].products.push(product);
-                }
+                const cat = product.category || 'other';
+                if (categories[cat]) categories[cat].products.push(product);
             });
 
             let html = '';
-            
-            Object.keys(categories).forEach(categoryKey => {
-                const category = categories[categoryKey];
-                
-                if (category.products.length > 0) {
+            Object.keys(categories).forEach(key => {
+                const cat = categories[key];
+                if (cat.products.length > 0) {
                     html += `
-                        <div class="category-section" data-category="${categoryKey}">
-                            <h2 class="category-title">${category.title}</h2>
+                        <div class="category-section" data-category="${key}">
+                            <h2 class="category-title">${cat.title}</h2>
                             <div class="products-grid">
-                    `;
-                    
-                    category.products.forEach(product => {
-                        html += createProductCard(product);
-                    });
-                    
-                    html += `
+                                ${cat.products.map(p => createProductCard(p)).join('')}
                             </div>
                         </div>
                     `;
@@ -549,67 +454,41 @@
             });
 
             container.innerHTML = html;
-            
-            if (currentFilter !== 'all') {
-                filterCategory(currentFilter);
-            }
+            filterCategory(currentFilter);
         }
 
         // ==========================================
-        // ИСПРАВЛЕННАЯ ФУНКЦИЯ СОЗДАНИЯ КАРТОЧКИ
+        // УНИВЕРСАЛЬНАЯ ФУНКЦИЯ ДЛЯ URL И BASE64
         // ==========================================
         function createProductCard(product) {
-            // 1. ОЧИСТКА ДАННЫХ ОТ МУСОРА
-            // Превращаем в строку, если пришло что-то другое
-            let rawImage = product.image ? String(product.image) : '';
-            
-            // Самое важное: убираем кавычки, скобки [], лишние пробелы
-            // Это решает проблему появления символов ',' > на экране
-            let imageUrl = rawImage.replace(/['"\[\]]/g, '').trim();
-            
-            // Если в ячейке было несколько ссылок через запятую, берем только первую
-            if (imageUrl.includes(',')) {
-                imageUrl = imageUrl.split(',')[0].trim();
-            }
+            let rawImage = product.image ? String(product.image).trim() : '';
+            let imageUrl = '';
 
-            // Простая проверка, что ссылка похожа на ссылку (длиннее 5 символов)
-            const hasImage = imageUrl.length > 5;
-
-            // 2. БЕЗОПАСНАЯ ГЕНЕРАЦИЯ HTML
-            // Если картинка не загрузится (onerror), она скроется, и покажется иконка
-            let imageContent;
-            
-            if (hasImage) {
-                imageContent = `
-                    <img 
-                        src="${imageUrl}" 
-                        alt="${product.name}" 
-                        class="product-image" 
-                        loading="lazy" 
-                        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
-                    >
-                    <div class="no-image-fallback" style="display:none;">
-                        ${getCategoryIcon(product.category)}
-                    </div>
-                `;
+            // Проверяем: если начинается с data:image, значит это Base64
+            if (rawImage.toLowerCase().startsWith('data:image')) {
+                imageUrl = rawImage; 
             } else {
-                imageContent = `<div class="no-image">${getCategoryIcon(product.category)}</div>`;
+                // Иначе считаем, что это ссылка, и чистим её
+                imageUrl = rawImage.replace(/['"\[\]]/g, '').trim();
+                if (imageUrl.includes(',')) imageUrl = imageUrl.split(',')[0].trim();
             }
-            
+
+            const hasImage = imageUrl.length > 10;
+            let imageContent = hasImage ? `
+                <img src="${imageUrl}" class="product-image" loading="lazy" 
+                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="no-image-fallback" style="display:none;">${getCategoryIcon(product.category)}</div>
+            ` : `<div class="no-image">${getCategoryIcon(product.category)}</div>`;
+
             return `
-                <div class="product-card" data-id="${product.id}">
-                    <div class="product-image-container">
-                        ${imageContent}
-                    </div>
+                <div class="product-card">
+                    <div class="product-image-container">${imageContent}</div>
                     <div class="product-content">
                         <div class="product-name" title="${product.name}">${product.name}</div>
                         <div class="product-details">${product.description || ''}</div>
                         <div class="product-divider"></div>
                         <div class="price-container">
-                            <span class="price">
-                                <span class="price-value">${product.price}</span> 
-                                <span class="currency">₸</span>
-                            </span>
+                            <span class="price">${product.price} <span class="currency">₸</span></span>
                         </div>
                         <div class="product-id">ID: ${product.id}</div>
                     </div>
@@ -618,39 +497,24 @@
         }
 
         function getCategoryIcon(category) {
-            const icons = {
-                'nuts': '🌰',
-                'dried-fruits': '🍇',
-                'dried-vegetables': '🥕',
-                'seeds': '🌻',
-                'confectionery': '🍬',
-                'other': '🛒'
-            };
+            const icons = { 'nuts':'🌰','dried-fruits':'🍇','dried-vegetables':'🥕','seeds':'🌻','confectionery':'🍬','other':'🛒' };
             return icons[category] || '🌰';
         }
 
-        function filterCategory(category) {
+        function filterCategory(category, event) {
             currentFilter = category;
             const sections = document.querySelectorAll('.category-section');
             const buttons = document.querySelectorAll('.filter-btn');
             
-            buttons.forEach(btn => btn.classList.remove('active'));
-            if(event) event.target.classList.add('active');
+            buttons.forEach(btn => {
+                btn.classList.remove('active');
+                if (event && btn === event.target) btn.classList.add('active');
+                else if (!event && btn.getAttribute('onclick').includes(`'${category}'`)) btn.classList.add('active');
+            });
             
-            if (category === 'all') {
-                sections.forEach(section => section.style.display = 'block');
-            } else {
-                sections.forEach(section => {
-                    if (section.dataset.category === category) {
-                        section.style.display = 'block';
-                    } else {
-                        section.style.display = 'none';
-                    }
-                });
-            }
+            sections.forEach(s => s.style.display = (category === 'all' || s.dataset.category === category) ? 'block' : 'none');
         }
 
-        // Обновление каждые 5 минут
         setInterval(loadProducts, 5 * 60 * 1000);
     </script>
 </body>
